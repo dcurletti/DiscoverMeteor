@@ -11,10 +11,23 @@ Template.postSubmit.events({
 			if (error) {
 				return alert(error.reason);
 			} else if (result.postExists) {
-				alert('This link has already been posted')
+				throwError('This link has already been posted')
 			} else {
 				Router.go('postPage', {_id:result._id})
 			}
 		})
+	}
+});
+
+Template.postSubmit.created = function () {
+	Session.set('postSubmitErrors', {});
+};
+
+Template.postSubmit.helpers({
+	errorMessage: function (field) {
+		return Session.get('postSubmitErrors')[field];
+	},
+	errorClass: function(field) {
+		return !!Session.get('postSubmitErrors')[field] ? 'has-error' : '';
 	}
 });
