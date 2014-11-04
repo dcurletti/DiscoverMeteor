@@ -7,14 +7,18 @@ Template.postSubmit.events({
 			title: $(e.target).find('[name=title]').val()
 		};
 
+		var errors = validatePost(post);
+		if (errors.title || errors.url)
+			return Session.set('postSubmitErrors', errors);
+
 		Meteor.call('postInsert', post, function(error, result) {
 			if (error) {
-				return alert(error.reason);
-			} else if (result.postExists) {
+				return throwError(error.reason);
+			} 
+			if (result.postExists) {
 				throwError('This link has already been posted')
-			} else {
-				Router.go('postPage', {_id:result._id})
-			}
+			} 
+			Router.go('postPage', {_id:result._id})///////////////////////
 		})
 	}
 });
